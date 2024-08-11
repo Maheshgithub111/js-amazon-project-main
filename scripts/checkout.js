@@ -98,7 +98,7 @@ cart.forEach((cartItem) => {
     </div>
   `;
 });
-
+//test
 document.querySelector('.js-order-summary')
   .innerHTML = cartSummaryHTML;
 
