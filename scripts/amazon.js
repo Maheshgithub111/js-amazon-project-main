@@ -1,8 +1,8 @@
-import {cart, addToCart} from '../data/cart.js';
-import {products} from '../data/products.js';
-import {formatCurrency} from './utils/money.js';
+import { cart, addToCart, calculateCartQuantity } from "../data/cart.js";
+import { products } from "../data/products.js";
+import { formatCurrency } from './utils/money.js';
 
-let productsHTML = '';
+let productsHTML = "";
 
 products.forEach((product) => {
   productsHTML += `
@@ -29,7 +29,7 @@ products.forEach((product) => {
       </div>
 
       <div class="product-quantity-container">
-        <select>
+        <select class="js-quantity-selector-${product.id}">
           <option selected value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -45,7 +45,7 @@ products.forEach((product) => {
 
       <div class="product-spacer"></div>
 
-      <div class="added-to-cart">
+      <div class="added-to-cart js-link-added-to-cart-${product.id}">
         <img src="images/icons/checkmark.png">
         Added
       </div>
@@ -58,24 +58,31 @@ products.forEach((product) => {
   `;
 });
 
-document.querySelector('.js-products-grid').innerHTML = productsHTML;
+document.querySelector(".js-products-grid").innerHTML = productsHTML;
 
 function updateCartQuantity() {
-  let cartQuantity = 0;
+  const cartQuantity = calculateCartQuantity();
+  document.querySelector(".js-cart-quantity").innerHTML = cartQuantity;
+  };
 
-  cart.forEach((cartItem) => {
-    cartQuantity += cartItem.quantity;
-  });
+updateCartQuantity();
 
-  document.querySelector('.js-cart-quantity')
-    .innerHTML = cartQuantity;
-}
-//test test 
-document.querySelectorAll('.js-add-to-cart')
-  .forEach((button) => {
-    button.addEventListener('click', () => {
-      const productId = button.dataset.productId;
-      addToCart(productId);
-      updateCartQuantity();
-    });
+document.querySelectorAll(".js-add-to-cart").forEach((button) => {
+  button.addEventListener("click", () => {
+    const productId = button.dataset.productId;
+
+    addToCart(productId);
+    updateCartQuantity();
+
+    // ----Exercise code----
+
+    const addedMessage = document.querySelector(
+      `.js-link-added-to-cart-${productId}`
+    );
+    addedMessage.classList.add("added-to-cart-visible");
+
+    setTimeout(() => {
+      addedMessage.classList.remove("added-to-cart-visible");
+    }, 2000);
   });
+});
